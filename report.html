@@ -12074,13 +12074,11 @@ Run the agent.py file after setting the flags from projects/smartcab folder inst
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p><em>Assumption: Indian Traffic Rules (Exactly opposite to US Traffic Rules), for understanding purposes</em>.
-<em>Implemented US Traffic Rules in the Code</em>.</p>
 <p><em>Safety</em></p>
 <ul>
 <li>'light' is "<em>relevent</em>" as smartcab should never ignore a red light, which might result in an accident.</li>
-<li>'right' is "<em>relevent</em>", when the 'light' is red, if car on the right goes straight and our smartcab moves left, there could be a potential accident.</li>
-<li>'left' is "<em>not relevent</em>", when the 'light' is red, as our smartcab can only go towards left now, unless the car on the left takes a U-turn, there cant be any accident.</li>
+<li>'right' is "<em> not relevent</em>", when the 'light' is red, as our smartcab can only go towards right now, unless the car on the right takes a U-turn, there cant be any accident.</li>
+<li>'left' is "<em>relevent</em>", when the 'light' is red, if car on the left goes straight and our smartcab moves right, there could be a potential accident.</li>
 <li>'oncoming' is "<em>relevent</em>", when the 'light' is red, the oncoming car going towards its right might result in an accident if our car tries to move left at the same time.</li>
 </ul>
 <p><em>Efficiency</em>
@@ -12405,28 +12403,39 @@ Optimal Policy (US Traffic Rules):</p>
 </ul>
 </li>
 <li>If our smartcab has to go right:<ul>
-<li>Check if there is a vehicle in the left:<ul>
+<li>If the light is green:<ul>
+<li>Go right</li>
+</ul>
+</li>
+<li>If the light is red:<ul>
+<li>Check if there is a vehicle in the left and is coming straight:<ul>
 <li>if yes: wait</li>
 <li>else move towards right</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>If our smartcab has to go left:<ul>
+</ul>
+</li>
+<li><p>If our smartcab has to go left:</p>
+<ul>
 <li>If light is red:<ul>
 <li>Don't move</li>
 </ul>
 </li>
 <li>If the light is green:<ul>
-<li>Move left</li>
+<li>Check if the vehicle on the oncoming lane is going towards its right or coming straight: <ul>
+<li>if yes: wait</li>
+<li>else move towards right</li>
 </ul>
 </li>
 </ul>
 </li>
-</ol>
+</ul>
+</li>
+<li><p>For most of the states, the policy looks to be correct. But there are few states where policy was not correct. For example:
+('right', 'green', 'forward', 'right')</p>
 <ul>
-<li>For most of the states, the policy looks to be correct. But there are few states where policy was not correct. For example:
-('right', 'green', 'forward', 'right')<ul>
 <li>forward : 0.44</li>
 <li>right : 0.00</li>
 <li>None : 0.00</li>
@@ -12434,14 +12443,14 @@ Optimal Policy (US Traffic Rules):</p>
 <li>-&gt; Ideally, the smartcab should have taken a right turn here instead of going forward.</li>
 </ul>
 </li>
-</ul>
+</ol>
 <p>('right', 'green', 'right', 'forward')</p>
 <ul>
 <li>forward : 0.34</li>
 <li>right : 0.00</li>
 <li>None : 0.00</li>
 <li>left : 0.00</li>
-<li>-&gt; Ideally, the smartcab should not have moved in this state, but it still tries to move forward, which might cause an accident as the car on the left is moving forward.</li>
+<li>-&gt; Ideally, the smartcab should have moved right in this state, but it still tries to move forward, which might cause an accident as the car on the right might go towards its right.</li>
 </ul>
 <ul>
 <li>For example,
@@ -12501,9 +12510,6 @@ Optimal Policy (US Traffic Rules):</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<ul>
-<li>The smartcab does not really know what state it will be in, in the future, as it does not know the full environment (There are other cars moving around as well). The only thing it knows is the state it is in currently and it had been in the past. The main objective of the smartcab is to obey the traffic rules and try to reach the destination in the most optimal way from the point it is currently in. As it can't plan future moves ahead of time, it does not make sense to assign future rewards.</li>
-</ul>
 
 </div>
 </div>
